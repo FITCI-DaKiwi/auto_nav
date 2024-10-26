@@ -4,7 +4,6 @@ from pybricks.parameters import Button, Color, Direction, Port, Side, Stop
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 import umath
-import numpy as np
 
 hub = PrimeHub()
 
@@ -20,6 +19,9 @@ right_motor = Motor(Port.A, Direction.CLOCKWISE)
 left_motor = Motor(Port.B, Direction.COUNTERCLOCKWISE)
 motor_3 = Motor(Port.F, Direction.CLOCKWISE)
 drive_base = DriveBase(left_motor, right_motor, wheel_diameter, robot_base)
+
+left_motor.reset_angle(0)
+right_motor.reset_angle(0)
 
 x = 0
 y = 0
@@ -39,11 +41,13 @@ def update_position():
     # Average distance moved
     dist = (left_dist + right_dist) / 2
     heading = hub.imu.heading()  # Use the hub's built-in gyro/IMU for heading
-    
+    print(f'{left_deg} {right_deg} {heading} {dist}')
     # Update x, y using trigonometry based on the current heading
-    x += dist * umath.cos(umath.radians(heading))
-    y += dist * umath.sin(umath.radians(heading))
+    x += dist * umath.sin(umath.radians(heading))
+    y += dist * umath.cos(umath.radians(heading))
     
+    left_motor.reset_angle(0)
+    right_motor.reset_angle(0)
     return x, y
 
 
@@ -62,5 +66,4 @@ def track_position(update_interval_ms):
 
 # Example usage to update position every 500 milliseconds (0.5 seconds)
 track_position(500)
-
 
